@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plynulý pohyb ponorky a vlnivý pohyb rýb</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        #title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 100px;
+            font-weight: bold;
+            color: navy;
+            text-shadow: 2px 2px 5px lightblue;
+            z-index: 10;
+        }
+
+        #musicButton {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 20px;
+            background-color: navy;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        #musicButton:hover {
+            background-color: darkblue;
+        }
+
+        .fish {
+            position: absolute;
+            width: 100px;
+            animation: wave 2s infinite ease-in-out;
+        }
+
+        #fishLeft {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        #fishRight {
+            bottom: 20px;
+            right: 20px;
+            transform: scaleX(-1); /* Zrkadlové otočenie */
+        }
+
+        @keyframes wave {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="title">Tengeralattjáró</div>
+    <img id="ponorka" src="Ponorka.png" alt="Ponorka" 
+         style="position:absolute; width:550px;">
+    <button id="musicButton">▶ Zapnúť hudbu</button>
+    <audio id="music" loop>
+        <source src="yellow-submarine.mp3" type="audio/mpeg">
+        Váš prehliadač nepodporuje prehrávanie zvuku.
+    </audio>
+    
+    <img id="fishLeft" class="fish" src="fish.jpeg" alt="Ryba vľavo">
+    <img id="fishRight" class="fish" src="fish.jpeg" alt="Ryba vpravo">
+    
+    <script>
+        let ponorka = document.getElementById("ponorka");
+        let audio = document.getElementById("music");
+        let musicButton = document.getElementById("musicButton");
+
+        musicButton.addEventListener("click", function () {
+            if (audio.paused) {
+                audio.play();
+                musicButton.textContent = "⏸ Vypnúť hudbu";
+            } else {
+                audio.pause();
+                musicButton.textContent = "▶ Zapnúť hudbu";
+            }
+        });
+
+        function initialize() {
+            let ponorkaWidth = ponorka.clientWidth;
+            let ponorkaHeight = ponorka.clientHeight;
+
+            let x = Math.random() * (window.innerWidth - ponorkaWidth);
+            let y = Math.random() * (window.innerHeight - ponorkaHeight);
+            let speed = 2.2;
+            let dx = (Math.random() * 2 - 1) * speed;
+            let dy = (Math.random() * 2 - 1) * speed;
+
+            ponorka.style.left = x + "px";
+            ponorka.style.top = y + "px";
+
+            function move() {
+                x += dx;
+                y += dy;
+
+                if (x <= 0 || x >= window.innerWidth - ponorkaWidth) {
+                    dx *= -1;
+                }
+                if (y <= 0 || y >= window.innerHeight - ponorkaHeight) {
+                    dy *= -1;
+                }
+
+                ponorka.style.left = x + "px";
+                ponorka.style.top = y + "px";
+
+                requestAnimationFrame(move);
+            }
+
+            setInterval(() => {
+                dx = (Math.random() * 2 - 1) * speed;
+                dy = (Math.random() * 2 - 1) * speed;
+            }, 4000);
+
+            move();
+        }
+
+        window.onload = initialize;
+    </script>
+</body>
+</html>
